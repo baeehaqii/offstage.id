@@ -19,6 +19,9 @@
 /* Hover or keyboard focus on a .group parent */
 @custom-variant lit (&:is(:where(.group):is(:hover, :focus-visible) *));
 
+/* Same trigger as lit, for targets outside the .group: anything inside a .cast with a lit .group in it */
+@custom-variant cast (&:is(:where(.cast):has(.group:is(:hover, :focus-visible)) *));
+
 body {
   background: #fff;
   color: var(--color-ink);
@@ -52,6 +55,32 @@ body {
 
 .word {
   display: inline-block;
+}
+
+/* Crew detail: reduced motion keeps the man still and drops the woman. */
+.crew-cycle-woman {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .crew-cycle-woman {
+    display: block;
+    animation: crew-cycle-woman 8s infinite;
+  }
+  .crew-cycle-man {
+    animation: crew-cycle-man 8s infinite;
+  }
+
+  /* 47→53% and 94→100% are the ~0.5s crossfades, in step on both figures */
+  @keyframes crew-cycle-man {
+    0%, 47% { opacity: 1; }
+    53%, 94% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes crew-cycle-woman {
+    0%, 47% { opacity: 0; }
+    53%, 94% { opacity: 1; }
+    100% { opacity: 0; }
+  }
 }
 
 /* Scroll reveals: <Reveal /> sets [data-in] once a [data-reveal] section is 12% in view.
