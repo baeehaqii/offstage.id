@@ -15,6 +15,8 @@ const archivo = Archivo({
 });
 
 export const metadata: Metadata = {
+  // Resolves relative Open Graph image paths on article pages.
+  metadataBase: new URL("https://offstage.id"),
   title: "Offstage — Stories beyond the stage",
   description: "A full-service creative agency building worlds through stage.",
 };
