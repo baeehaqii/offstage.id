@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "../reveal";
-import ArticleCard from "@/components/ArticleCard";
+import ArticleTile from "@/components/ArticleTile";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { display, eyebrow, words } from "@/components/type";
@@ -61,18 +61,35 @@ export default async function ArticlesPage({ searchParams }: PageProps<"/article
 
         <section
           aria-label={active ? `${active} articles` : "All articles"}
-          className="mx-auto grid max-w-[1440px] gap-x-6 gap-y-12 px-4 pb-12 pt-12 sm:grid-cols-2 md:px-10 md:pb-24 md:pt-16 lg:grid-cols-4"
+          className="mx-auto mt-12 grid max-w-[1440px] grid-cols-1 gap-4 px-4 pb-12 sm:grid-cols-3 sm:gap-4 md:px-10 md:pb-24 lg:gap-6"
         >
-          {list.map((a, i) => (
-            <ArticleCard
-              key={a.slug}
-              as="h2"
-              index={i}
-              href={`/articles/${a.slug}`}
-              title={a.title}
-              subheadline={a.subheadline}
-              photo={a.coverImage}
-            />
+          {/* 3 flex columns like the homepage BENTO: each item keeps its own height, so no grid gaps. */}
+          {[0, 1, 2].map((col) => (
+            <div key={col} className="flex flex-col gap-4 lg:gap-6">
+              {list
+                .filter((_, i) => i % 3 === col)
+                .map((a) => {
+                  const i = list.indexOf(a);
+                  // Middle column runs tall, matching the BENTO zig-zag anchor.
+                  const tall = col === 1;
+                  return (
+                    <ArticleTile
+                      key={a.slug}
+                      href={`/articles/${a.slug}`}
+                      photo={a.coverImage}
+                      i={i}
+                      sizes="(min-width: 1440px) 460px, (min-width: 640px) 33vw, 100vw"
+                      title={
+                        <>
+                          {a.title[0]} <em>{a.title[1]}</em>
+                        </>
+                      }
+                      caption={a.subheadline}
+                      className={`aspect-[4/5] ${tall ? "sm:aspect-[1546/1933]" : "sm:aspect-[1546/870]"}`}
+                    />
+                  );
+                })}
+            </div>
           ))}
         </section>
       </main>
