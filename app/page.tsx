@@ -1,9 +1,12 @@
-import type { CSSProperties } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "./reveal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { display, eyebrow, words } from "@/components/type";
+import ArticleCard from "@/components/ArticleCard";
+import ArticleTile from "@/components/ArticleTile";
+import { ARTICLES } from "@/lib/articles";
 import { PHOTOS, type Photo } from "@/lib/photos";
 
 import charLeft from "@/public/images/char-left.png";
@@ -16,7 +19,8 @@ const BENTO: [Photo, Photo][] = [
   [PHOTOS.bento5, PHOTOS.bento6],
 ];
 
-const ARTICLES: Photo[] = [PHOTOS.card1, PHOTOS.card2, PHOTOS.card3, PHOTOS.card4];
+// Covers are card-1..4, so the row looks exactly as before; the copy stays placeholder until the design lands.
+const LATEST = ARTICLES.slice(0, 4);
 
 export default function Home() {
   return (
@@ -75,33 +79,16 @@ export default function Home() {
               {col.map((photo, r) => {
                 const tall = (r === 0) !== (c === 1); // A, D, E are the tall cells
                 return (
-                  <a
+                  <ArticleTile
                     key={r}
                     href="#"
-                    style={{ "--i": c * 2 + r } as CSSProperties}
-                    className={`tile group relative block overflow-hidden bg-line ${tall ? "aspect-[1546/1933]" : "aspect-[1546/870]"} ${c === 2 ? "max-sm:flex-1 max-sm:aspect-[4/5]" : ""}`}
-                  >
-                    <span className="tile-media absolute inset-0">
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        sizes="(min-width: 1440px) 460px, (min-width: 640px) 33vw, 50vw"
-                        placeholder="blur"
-                        className="object-cover transition-[filter] duration-380 ease-out-3 lit:grayscale-85 lit:contrast-118 lit:duration-520"
-                      />
-                    </span>
-                    <span className="absolute inset-0 bg-curtain opacity-0 mix-blend-multiply transition-opacity duration-380 ease-out-3 lit:opacity-88 lit:duration-520" />
-                    <span className="absolute inset-0 translate-y-full bg-linear-to-t from-[rgb(90_6_10/0.72)] via-[rgb(140_10_16/0.18)] via-55% to-transparent transition-transform duration-380 ease-out-3 lit:translate-y-0 lit:duration-520" />
-                    <span className="absolute inset-x-0 bottom-0 translate-y-3.5 p-4 text-white opacity-0 transition duration-380 ease-out-3 lit:translate-y-0 lit:opacity-100 lit:delay-90 lit:duration-520 md:p-6">
-                      <span className="block font-serif text-[clamp(18px,1.8vw,26px)] leading-[1.05]">
-                        HEADLINE <em>IS HERE</em>
-                      </span>
-                      <span className="mt-1.5 block text-[10px] uppercase tracking-[0.16em] text-[#f3dedf]">
-                        Sub-headline is here
-                      </span>
-                    </span>
-                  </a>
+                    photo={photo}
+                    i={c * 2 + r}
+                    sizes="(min-width: 1440px) 460px, (min-width: 640px) 33vw, 50vw"
+                    title={<>HEADLINE <em>IS HERE</em></>}
+                    caption="Sub-headline is here"
+                    className={`${tall ? "aspect-[1546/1933]" : "aspect-[1546/870]"} ${c === 2 ? "max-sm:flex-1 max-sm:aspect-[4/5]" : ""}`}
+                  />
                 );
               })}
             </div>
@@ -109,15 +96,15 @@ export default function Home() {
         </section>
 
         <div className="mt-8 flex justify-center md:mt-10">
-          <a
-            href="#"
+          <Link
+            href="/articles"
             className="flex min-h-11 flex-col items-center gap-2 px-4 py-1 text-ink transition-colors duration-200 hover:text-curtain"
           >
             <svg aria-hidden viewBox="0 0 14 14" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M7 0v14M0 7h14" />
             </svg>
             <span className="text-[13px] font-medium uppercase tracking-[0.1em]">View more</span>
-          </a>
+          </Link>
         </div>
 
         <section data-reveal className="relative mt-6 overflow-x-clip md:mt-4">
@@ -152,29 +139,15 @@ export default function Home() {
           aria-label="Latest articles"
           className="mx-auto grid max-w-[1440px] gap-x-6 gap-y-12 px-4 pb-12 sm:grid-cols-2 md:px-10 md:pb-24 lg:grid-cols-4"
         >
-          {ARTICLES.map((photo, i) => (
-            <a key={i} href="#" className="group block">
-              <span className="block text-[11px] tracking-[0.16em] text-curtain tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="relative mt-2 block h-px bg-line">
-                <span className="absolute inset-0 origin-left scale-x-0 bg-curtain transition-transform duration-600 ease-out-3 lit:scale-x-100" />
-              </span>
-              <span className="mt-4 block font-serif text-[26px] leading-[1.1] tracking-[0.01em] text-ink/80">
-                HEADLINE <em>IS HERE</em>
-              </span>
-              <span className="mt-2 block text-[11px] uppercase tracking-[0.14em] text-mute">Sub-headline is here</span>
-              <span className="relative mt-5 block aspect-video overflow-hidden bg-line">
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(min-width: 1440px) 340px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  placeholder="blur"
-                  className="object-cover transition-transform duration-600 ease-out-3 lit:scale-105"
-                />
-              </span>
-            </a>
+          {LATEST.map((article, i) => (
+            <ArticleCard
+              key={article.slug}
+              index={i}
+              href={`/articles/${article.slug}`}
+              title={["HEADLINE", "IS HERE"]}
+              subheadline="Sub-headline is here"
+              photo={article.coverImage}
+            />
           ))}
         </section>
       </main>
