@@ -4,11 +4,11 @@ import Link from "next/link";
 
 import logoLight from "@/public/images/logo-light.png";
 
-// Only Articles/Thoughts have pages so far; the rest stay "#" until they do.
+// Only Articles/Thoughts and The Crew have pages so far; the rest stay "#" until they do.
 const NAV = [
   { label: "Articles", href: "/articles" },
   { label: "Film", href: "#" },
-  { label: "The Crew", href: "#" },
+  { label: "The Crew", href: "/the-crew" },
   { label: "What’s Next", href: "#" },
   { label: "About", href: "#" },
   { label: "Thoughts", href: "/articles" },
