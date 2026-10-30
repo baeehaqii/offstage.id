@@ -1,135 +1,46 @@
 import type { CSSProperties } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import Reveal from "./reveal";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { display, eyebrow, words } from "@/components/type";
+import { PHOTOS, type Photo } from "@/lib/photos";
 
-import hero from "@/public/images/hero.jpg";
-import bento1 from "@/public/images/bento-1.jpg";
-import bento2 from "@/public/images/bento-2.jpg";
-import bento3 from "@/public/images/bento-3.jpg";
-import bento4 from "@/public/images/bento-4.jpg";
-import bento5 from "@/public/images/bento-5.jpg";
-import bento6 from "@/public/images/bento-6.jpg";
-import card1 from "@/public/images/card-1.jpg";
-import card2 from "@/public/images/card-2.jpg";
-import card3 from "@/public/images/card-3.jpg";
-import card4 from "@/public/images/card-4.jpg";
 import charLeft from "@/public/images/char-left.png";
 import charRight from "@/public/images/char-right.png";
-import logoLight from "@/public/images/logo-light.png";
-import logoDark from "@/public/images/logo-dark.png";
-
-const NAV = ["Articles", "Film", "The Crew", "What’s Next", "About", "Thoughts", "Shop"];
-
-type Photo = { src: StaticImageData; alt: string };
 
 // Three equal columns; only the row ratios differ, so the eye zig-zags down. Darkest image anchors the middle.
 const BENTO: [Photo, Photo][] = [
-  [
-    { src: bento1, alt: "Performer in a billowing white dress against a blue sky" },
-    { src: bento2, alt: "Camera operator filming a performer beside a studio window" },
-  ],
-  [
-    { src: bento3, alt: "Fashion sketches pinned to a studio wall" },
-    { src: bento4, alt: "Woman in a red suit and dark glasses against a green wall" },
-  ],
-  [
-    { src: bento5, alt: "Two women lying on rumpled bedsheets" },
-    { src: bento6, alt: "Flat lay of a knit beanie, sweater, jeans and tulips" },
-  ],
+  [PHOTOS.bento1, PHOTOS.bento2],
+  [PHOTOS.bento3, PHOTOS.bento4],
+  [PHOTOS.bento5, PHOTOS.bento6],
 ];
 
-const ARTICLES: Photo[] = [
-  { src: card1, alt: "Woman in red holding up teal fabric against a blue sky" },
-  { src: card2, alt: "Woman in round red sunglasses on an orange backdrop" },
-  { src: card3, alt: "Colour swatches beside a tablet sketch" },
-  { src: card4, alt: "Clapperboard held up on a film set" },
-];
-
-const CONTACT = ["Email", "Instagram", "TikTok"];
-
-// Splits text into staggered words for the headline rise; `from` continues the stagger across spans.
-function words(text: string, from = 0) {
-  return text.split(" ").flatMap((w, i) => [
-    i ? " " : null,
-    <span key={i} className="word" style={{ "--i": from + i } as CSSProperties}>
-      {w}
-    </span>,
-  ]);
-}
-
-const eyebrow = "text-[11px] font-semibold uppercase tracking-[0.3em] md:text-[13px]";
-const display = "font-serif text-[clamp(44px,6.7vw,96px)] leading-[0.95] tracking-[-0.01em]";
-
-async function subscribe(formData: FormData) {
-  "use server";
-  // ponytail: no-op until a newsletter provider is chosen; wire formData.get("email") there.
-  void formData;
-}
+const ARTICLES: Photo[] = [PHOTOS.card1, PHOTOS.card2, PHOTOS.card3, PHOTOS.card4];
 
 export default function Home() {
   return (
     <>
       <Reveal />
 
-      <header className="relative h-[max(440px,27vw)] bg-ink text-white">
-        <Image
-          src={hero}
-          alt="Man in sunglasses seated alone in a darkened theatre"
-          fill
-          sizes="100vw"
-          loading="eager"
-          fetchPriority="high"
-          placeholder="blur"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-black/55 via-transparent via-35% to-black/40" />
-
-        <div className="relative z-30 mx-auto flex max-w-[1440px] items-center justify-between px-4 pt-5 md:px-10 md:pt-6">
-          <a href="#" aria-label="Offstage home" className="shrink-0">
-            <Image src={logoLight} alt="Offstage" className="h-8 w-auto md:h-10" sizes="180px" />
-          </a>
-
-          <nav aria-label="Main" className="hidden lg:block">
-            <ul className="flex gap-[clamp(24px,3.4vw,64px)]">
-              {NAV.map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
-                    className="block py-2 text-sm font-medium uppercase tracking-[0.1em] transition-colors duration-200 hover:text-curtain-bright"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* ponytail: native <details> menu, no JS state */}
-          <details className="group/menu lg:hidden">
-            <summary className="flex h-11 cursor-pointer list-none items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] [&::-webkit-details-marker]:hidden">
-              Menu
-              <span aria-hidden className="flex w-6 flex-col gap-1.5">
-                <span className="h-px bg-white transition-transform duration-200 group-open/menu:translate-y-[3.5px] group-open/menu:rotate-45" />
-                <span className="h-px bg-white transition-transform duration-200 group-open/menu:-translate-y-[3.5px] group-open/menu:-rotate-45" />
-              </span>
-            </summary>
-            <nav aria-label="Main" className="absolute inset-x-0 top-full z-30 bg-ink px-4 pb-6 pt-2 md:px-10">
-              <ul>
-                {NAV.map((item) => (
-                  <li key={item} className="border-b border-white/15">
-                    <a
-                      href="#"
-                      className="block py-3.5 text-sm font-medium uppercase tracking-[0.1em] transition-colors duration-200 hover:text-curtain-bright"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </details>
-        </div>
-
+      <Header
+        className="relative h-[max(440px,27vw)] bg-ink text-white"
+        backdrop={
+          <>
+            <Image
+              src={PHOTOS.hero.src}
+              alt={PHOTOS.hero.alt}
+              fill
+              sizes="100vw"
+              loading="eager"
+              fetchPriority="high"
+              placeholder="blur"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-b from-black/55 via-transparent via-35% to-black/40" />
+          </>
+        }
+      >
         <a href="#" className="absolute inset-x-0 bottom-0 z-20 mx-auto block max-w-[1440px] px-4 pb-6 md:px-10 md:pb-7">
           <span className="block font-serif text-[clamp(30px,3.4vw,52px)] leading-none">
             HEADLINE <em>IS HERE</em>
@@ -138,7 +49,7 @@ export default function Home() {
             Sub-headline is here
           </span>
         </a>
-      </header>
+      </Header>
 
       <main>
         <section data-reveal className="mx-auto max-w-[1440px] px-4 pt-16 text-center md:px-10 md:pt-[120px]">
@@ -268,59 +179,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="silver-fade">
-        <div className="mx-auto grid max-w-[1440px] gap-12 px-4 py-14 md:grid-cols-3 md:items-center md:px-10 md:py-16">
-          <div>
-            <Image src={logoDark} alt="Offstage" className="h-8 w-auto md:h-9" sizes="160px" />
-            <address className="mt-3 text-base font-semibold uppercase not-italic leading-tight md:text-lg">
-              Address goes here
-              <br />
-              Jakarta, Indonesia
-            </address>
-          </div>
-
-          <div className="md:justify-self-center">
-            <h2 className="font-serif text-5xl italic leading-none text-white">Contact</h2>
-            <ul className="mt-4 text-[11px] font-semibold uppercase leading-[1.5] tracking-[0.34em]">
-              {CONTACT.map((c) => (
-                <li key={c}>
-                  <a href="#" className="inline-block py-0.5 transition-colors duration-200 hover:text-white">
-                    {c}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="text-white md:justify-self-end">
-            <h2 className="font-serif text-[clamp(44px,4.4vw,64px)] italic leading-none">Stay in the loop</h2>
-            <p className="mt-2 text-right text-[11px] font-medium uppercase tracking-[0.34em]">Join our newsletter</p>
-            <form action={subscribe} className="mt-5 flex items-center rounded-full border border-white pl-6 pr-2 focus-within:outline-2 focus-within:outline-offset-3 focus-within:outline-white">
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="newsletter-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="ENTER YOUR EMAIL"
-                className="h-12 min-w-0 flex-1 bg-transparent text-xs tracking-[0.34em] text-white outline-none placeholder:text-white md:text-[13px]"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="grid size-11 cursor-pointer place-items-center rounded-full transition-colors duration-200 hover:bg-white hover:text-ink"
-              >
-                <svg aria-hidden viewBox="0 0 20 12" className="w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M0 6h18M13 1l5 5-5 5" />
-                </svg>
-              </button>
-            </form>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
